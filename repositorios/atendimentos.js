@@ -7,6 +7,12 @@ class Atendimento {
         return query(sql, atendimento)
         // retornamos a promise para quem chamou a funcao lidar com ela
     }
+
+    lista() {
+        const sql = 'SELECT * FROM Atendimentos'
+
+        return query(sql)
+    }
 }
 
 module.exports = new Atendimento()
