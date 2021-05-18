@@ -1,9 +1,10 @@
 const axios = require('axios')
 const moment = require('moment')
 const conexao = require('../infraestrutura/database/conexao')
+const repositorio = require('../repositorios/atendimentos')
 
 class Atendimento {
-    adiciona(atendimento, response) {
+    adiciona(atendimento) {
         const dataCriacao = moment().format('YYYY-MM-DD HH:MM:SS')
         const data = moment(atendimento.data, 'DD/MM/YYYY').format('YYYY-MM-DD HH:MM:SS')
         
@@ -29,23 +30,22 @@ class Atendimento {
         // Se lengh for 0 a variável equivale a false
 
         if (existemErros) {
-            response.status(400).json(erros)
+            return new Promise((resolve, reject) => {
+                reject(erros)
+            })
+            // Quando queremos gerar um erro então, trocamos a response por uma nova promise,
+            // que é o que o controller espera
         } else {
             const atendimentoDatado = {...atendimento, dataCriacao, data}
             // Criamos um objeto novo para ser evitar qualquer problema em outras partes do codigo
-    
-            const sql = 'INSERT INTO Atendimentos SET ?'
-    
-            conexao.query(sql, atendimentoDatado, (erro, resultados) => {
-                if (erro) {
-                    response.status(400).json(erro)
-                    // 400: Bad request. O Cliente mandou algum dado inválido
-                } else {
-                    response.status(201).json(atendimento)
-                    // O 'resultados' mostra o insertId entre outros
-                    // 201 created
-                }
-            })
+
+            return repositorio.adiciona(atendimentoDatado)
+                .then(resultados => {
+                    const id = resultados.insertId
+                    // O 'resultados' contém o insertId entre outros
+
+                    return { ...atendimento, id}
+                })
         }
     }
 
