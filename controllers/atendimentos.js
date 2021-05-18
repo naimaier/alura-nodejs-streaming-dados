@@ -3,7 +3,7 @@ const Atendimento = require('../models/atendimentos')
 module.exports = app => {
     app.get('/atendimentos', (request, response) => {
         Atendimento.lista()
-            .then(atendimentos => response.json(atendimentos))
+            .then(resultados => response.json(resultados))
             .catch(erros => response.status(400).json(erros))
     })
 
@@ -11,7 +11,7 @@ module.exports = app => {
         const id = parseInt(request.params.id)
 
         Atendimento.buscaPorId(id)
-            .then(atendimento => response.json(atendimento))
+            .then(resultados => response.json(resultados))
             .catch(erros => response.status(400).json(erros))
     })
     
@@ -19,7 +19,7 @@ module.exports = app => {
         const atendimento = request.body
 
         Atendimento.adiciona(atendimento)
-            .then(atendimentoCadastrado => response.status(201).json(atendimentoCadastrado))
+            .then(resultados => response.status(201).json(resultados))
             .catch(erros => response.status(400).json(erros))
     })
 
@@ -28,7 +28,7 @@ module.exports = app => {
         const valores = request.body
 
         Atendimento.altera(id, valores)
-            .then(atendimentoAlterado => response.json(atendimentoAlterado))
+            .then(resultados => response.json(resultados))
             .catch(erros => response.status(400).json(erros))
     })
 
