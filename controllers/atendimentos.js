@@ -10,7 +10,9 @@ module.exports = app => {
     app.get('/atendimentos/:id', (request, response) => {
         const id = parseInt(request.params.id)
 
-        Atendimento.buscaPorId(id, response)
+        Atendimento.buscaPorId(id)
+            .then(atendimento => response.json(atendimento))
+            .catch(erros => response.status(400).json(erros))
     })
     
     app.post('/atendimentos', (request, response) => {

@@ -66,22 +66,15 @@ class Atendimento {
         return repositorio.lista()
     }
 
-    buscaPorId(id, response) {
-        const sql = 'SELECT * FROM Atendimentos WHERE id = ?'
-
-        conexao.query(sql, id, async (erro, resultados) => {
-            const atendimento = resultados[0]
-            const cpf = atendimento.cliente
-            
-            if (erro) {
-                response.status(400).json(erro)
-            } else {
+    buscaPorId(id) {
+        return repositorio.buscaPorId(id)
+            .then(async resultados => {
+                const atendimento = resultados[0]
+                const cpf = atendimento.cliente
                 const { data } = await axios.get(`http://localhost:8082/${cpf}`)
                 atendimento.cliente = data
-
-                response.status(200).json(atendimento)
-            }
-        })
+                return { atendimento }
+            })
     }
 
     altera(id, valores, response) {
