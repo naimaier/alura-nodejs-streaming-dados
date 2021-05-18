@@ -6,7 +6,7 @@ const repositorio = require('../repositorios/atendimentos')
 class Atendimento {
     constructor() {
         this.dataEhValida = ({data, dataCriacao}) => moment(data).isSameOrAfter(dataCriacao)
-        this.clienteEhValido = ({tamanho}) => tamanho >= 5
+        this.clienteEhValido = ({tamanho}) => tamanho == 11
 
         this.valida = parametros => this.validacoes.filter( campo => {
                 const { nome } = campo
@@ -77,20 +77,15 @@ class Atendimento {
             })
     }
 
-    altera(id, valores, response) {
+    altera(id, valores) {
         if (valores.data) {
             valores.data = moment(valores.data, 'DD/MM/YYYY').format('YYYY-MM-DD HH:MM:SS')
         }
 
-        const sql = `UPDATE Atendimentos SET ? WHERE id = ?`
-
-        conexao.query(sql, [valores, id], (erro, resultados) => {
-            if (erro) {
-                response.status(400).json(erro)
-            } else {
-                response.status(200).json({...valores, id})
-            }
-        })
+        return repositorio.altera(id, valores)
+            .then(resultados => {
+                return {...valores, id}
+            })
     }
 
     apaga(id, response) {
