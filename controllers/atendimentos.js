@@ -35,7 +35,9 @@ module.exports = app => {
     app.delete('/atendimentos/:id', (request, response) => {
         const id = parseInt(request.params.id)
         
-        Atendimento.apaga(id, response)
+        Atendimento.apaga(id)
+            .then(resultados => response.json(resultados))
+            .catch(erros => response.status(400).json(erros))
     })
 }
 // Estamos exportando uma funcao que recebe app como parametro

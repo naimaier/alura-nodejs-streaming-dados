@@ -83,21 +83,11 @@ class Atendimento {
         }
 
         return repositorio.altera(id, valores)
-            .then(resultados => {
-                return {...valores, id}
-            })
+            .then(() => ({...valores, id}))
     }
 
-    apaga(id, response) {
-        const sql = 'DELETE FROM Atendimentos WHERE id = ?'
-
-        conexao.query(sql, id, (erro, resultados) => {
-            if (erro) {
-                response.status(400).json(erro)
-            } else {
-                response.status(200).json({id})
-            }
-        })
+    apaga(id) {
+        return repositorio.apaga(id).then(() => ({ id }))
     }
 }
 
